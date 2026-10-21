@@ -75,6 +75,16 @@ pub fn Cpu(comptime Bus: type) type {
             self.p = (self.p & ~(zero | negative)) | z | (value & negative);
         }
 
+        fn setC(self: *Self, carry: bool) void {
+            const mask: u8 = 0x01;
+            self.p = (self.p & ~mask) | @as(u8, @intFromBool(carry));
+        }
+
+        fn setV(self: *Self, overflow: bool) void {
+            const mask: u8 = 0x40;
+            self.p = (self.p & ~mask) | @as(u8, if (overflow) mask else 0);
+        }
+
         fn lda(self: *Self, value: u8) void {
             self.a = value;
             self.setZN(value);
